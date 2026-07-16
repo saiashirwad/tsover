@@ -1,7 +1,7 @@
 {
-  "name": "tsover",
-  "version": "0.0.0",
-  "description": "Fork of TypeScript with operator overloading",
+  "name": "tsover-generic-overloads",
+  "version": "6.0.2-generic.0",
+  "description": "Temporary fork of tsover with generic operator overload inference",
   "keywords": [
     "esbuild-plugin",
     "operator-overloading",
@@ -15,7 +15,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/software-mansion/tsover.git",
+    "url": "git+https://github.com/saiashirwad/tsover.git",
     "directory": "packages/tsover"
   },
   "bin": {

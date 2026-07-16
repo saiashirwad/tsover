@@ -1,7 +1,7 @@
 {
   "name": "tsover-mono",
   "version": "0.0.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "test": "pnpm run check && pnpm -r test",
     "check": "oxlint . && oxfmt packages apps scripts --check",
