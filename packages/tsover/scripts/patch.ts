@@ -221,12 +221,31 @@ try {
     } as Record<SyntaxKind, BinaryOperator | undefined>;
 
     function __tsover__findBinarySignature(signatures: readonly Signature[], lhs: Type, rhs: Type): Type | undefined {
-        // Find a signature where the first parameter accepts lhs and second accepts rhs
+        // Find a signature where the first parameter accepts lhs and second accepts rhs.
+        // Generic operator signatures use the same type inference machinery as calls,
+        // but infer directly from the already-checked operand types.
         for (const signature of signatures) {
-            const paramType1 = getTypeAtPosition(signature, 0);
-            const paramType2 = getTypeAtPosition(signature, 1);
+            let candidate = signature;
+            if (signature.typeParameters) {
+                const inferenceContext = createInferenceContext(
+                    signature.typeParameters,
+                    signature,
+                    isInJSFile(signature.declaration) ? InferenceFlags.AnyDefault : InferenceFlags.None,
+                );
+                inferTypes(inferenceContext.inferences, lhs, getTypeAtPosition(signature, 0));
+                inferTypes(inferenceContext.inferences, rhs, getTypeAtPosition(signature, 1));
+                candidate = getSignatureInstantiation(
+                    signature,
+                    getInferredTypes(inferenceContext),
+                    isInJSFile(signature.declaration),
+                    inferenceContext.inferredTypeParameters,
+                );
+            }
+
+            const paramType1 = getTypeAtPosition(candidate, 0);
+            const paramType2 = getTypeAtPosition(candidate, 1);
             if (isTypeAssignableTo(lhs, paramType1) && isTypeAssignableTo(rhs, paramType2)) {
-                return getReturnTypeOfSignature(signature);
+                return getReturnTypeOfSignature(candidate);
             }
         }
         return undefined;
